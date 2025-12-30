@@ -21,9 +21,9 @@ import contextily as cx
     )
 @click.option(
     '--zoom',
-    default=12,
+    default=None,
     type=int,
-    help='Zoom level for basemap (default: 12)'
+    help='Zoom level for basemap (default: None)'
     )
 def main(cityname, csv_file, zoom):
     """Generate square satellite imagery for cities."""
@@ -82,7 +82,7 @@ def mapshot_from_csv(filepath, zoom):
     with open(filepath, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            cityname = row.get('city')
+            cityname = row.get('object')
             mapshot(cityname.strip(), zoom)
 
 
@@ -100,12 +100,19 @@ def generate_plt(square_gdf, square, output_file, zoom):
 
     print("\tAdding basemap")
 
-    cx.add_basemap(
-        ax,
-        source=cx.providers.Esri.WorldImagery,
-        zoom=zoom,
-        attribution=False
-    )
+    if zoom:
+        cx.add_basemap(
+            ax,
+            source=cx.providers.Esri.WorldImagery,
+            zoom=zoom,
+            attribution=False
+        )
+    else:
+        cx.add_basemap(
+            ax,
+            source=cx.providers.Esri.WorldImagery,
+            attribution=False
+        )
 
     print("\tDone adding basemap")
 
