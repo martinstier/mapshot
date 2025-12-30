@@ -1,4 +1,6 @@
 """Return image."""
+import os
+import csv
 import sys
 import re
 import requests
@@ -43,12 +45,25 @@ def mapshot(cityname):
     generate_plt(square_gdf, square, f"{safe_name}_out.png")
 
 
+def mapshot_from_csv(filepath):
+    """Process multiple cities from CSV file."""
+    print(f"Starting\tmapshot_from_csv()")
+
+    with open(filepath, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            cityname = row.get('city')
+            try:
+                mapshot(cityname.strip())
+            except Exception as e:
+                print(f"Error processing '{cityname}': {e}")
+
 def generate_plt(square_gdf, square, output_file):
     """Generate final output image."""
     print("Starting\tgenerate_plt")
 
     img_size = 2048
-    fig, ax = plt.subplots(
+    _, ax = plt.subplots(
         figsize=(img_size / 256, img_size / 256),
         dpi=256
     )
@@ -65,8 +80,11 @@ def generate_plt(square_gdf, square, output_file):
     ax.set_ylim(square.bounds[1], square.bounds[3])
     ax.axis("off")
 
+    os.makedirs("images", exist_ok=True)
+    output_path = os.ath.join("images", output_file)
+
     plt.savefig(
-        output_file,
+        output_path,
         dpi=256,
         bbox_inches="tight",
         pad_inches=0
@@ -91,9 +109,17 @@ def osm(cityname):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python(3) mapshot.py <cityname>")
+    if len(sys.argv) < 2:
+        print("Usage: python3 mapshot.py <cityname>")
+        print("       python3 mapshot.py --csv <filepath>")
         exit(1)
 
     print("Starting\tmapshot")
-    mapshot(sys.argv[1])
+    if sys.argv[1] == "--csv":
+        if len(sys.argv) != 3:
+            print("Usage: python3 mapshot.py <cityname>")
+            print("       python3 mapshot.py --csv <filepath>")
+            exit(1)
+        mapshot_from_csv(sys.argv[2])
+    else:
+        mapshot(sys.argv[1])
