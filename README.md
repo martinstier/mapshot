@@ -18,40 +18,33 @@ Generate the _perfect_ satellite image.
 
 ### Installation
 
-1. Clone the repository:
+Clone the repo:
 
 ```bash
 git clone https://github.com/yourusername/mapshot.git
 cd mapshot
 ```
 
-2. Create and activate a virtual environment:
+Create and activate a virtual environment and install dependencies:
 
 ```bash
 python3 -m venv env
 source env/bin/activate  # On Windows: env\Scripts\activate
-```
-
-3. Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
-
-4. Have fun! ☻ ☻ ☻
 
 ### Single City
 
 Generate a mapshot for a single city:
 
 ```bash
-python3 mapshot.py "Portland, Oregon"
+python3 mapshot.py "Fujikawaguchiko, Japan"
 ```
 
 With custom zoom level (higher = more detail):
 
 ```bash
-python3 mapshot.py "New York City" --zoom 15
+python3 mapshot.py "El Calafate, Santa Cruz, AR" --zoom 15
 ```
 
 ### Multiple Cities
@@ -62,15 +55,7 @@ Process multiple cities from a CSV file:
 python3 mapshot.py --csv <path to CSV>/cities.csv --zoom 12
 ```
 
-**CSV format** (`cities.csv`):
-
-```csv
-object
-Bariloche
-Schönau am Königssee
-Fujikawaguchiko, Japan
-El Calafate, Santa Cruz, AR
-```
+The CSV file should have one column with name `object`.
 
 ### Command-Line Options
 
@@ -92,11 +77,6 @@ Options:
 ### Output
 
 All images are saved to the `images/` directory with sanitized filenames:
-
-- Input: `"Portland, Oregon"`
-- Output: `images/portland_oregon_out.png`
-
-Images are 2048×2048 pixels by default.
 
 ### Limitations
 
