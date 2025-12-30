@@ -1,9 +1,9 @@
 """Return image."""
-import click
 import os
 import csv
 import sys
 import re
+import click
 import requests
 import geopandas as gpd
 from shapely.geometry import box
@@ -13,24 +13,32 @@ import contextily as cx
 
 @click.command()
 @click.argument('cityname', required=False)
-@click.option('--csv', 'csv_file', type=click.Path(exists=True), help='Process cities from CSV file')
-@click.option('--zoom', default=12, type=int, help='Zoom level for basemap (default: 12)')
+@click.option(
+    '--csv',
+    'csv_file',
+    type=click.Path(exists=True),
+    help='Process cities from CSV file'
+    )
+@click.option(
+    '--zoom',
+    default=12,
+    type=int,
+    help='Zoom level for basemap (default: 12)'
+    )
 def main(cityname, csv_file, zoom):
     """Generate square satellite imagery for cities."""
-    global ZOOM
-    ZOOM = zoom
-
     if csv_file:
-        mapshot_from_csv(csv_file)
+        mapshot_from_csv(csv_file, zoom)
     elif cityname:
-        mapshot(cityname)
+        mapshot(cityname, zoom)
     else:
         click.echo("Error: Provide either a city name or --csv file")
         click.echo("Usage: python3 mapshot.py <cityname>")
         click.echo("       python3 mapshot.py --csv <filepath>")
-        exit(1)
+        sys.exit(1)
 
-def mapshot(cityname):
+
+def mapshot(cityname, zoom):
     """Create a mapshot of the inputted city."""
     print(f"Starting\tmapshot({cityname})")
 
@@ -63,27 +71,23 @@ def mapshot(cityname):
     square_gdf = gpd.GeoDataFrame(geometry=[square], crs=gdf.crs)
 
     safe_name = re.sub(r'[^a-zA-Z0-9]+', '_', cityname).strip('_')
-    generate_plt(square_gdf, square, f"{safe_name.lower()}_out.png")
+    generate_plt(square_gdf, square, f"{safe_name.lower()}_out.png", zoom)
 
 
-def mapshot_from_csv(filepath):
+def mapshot_from_csv(filepath, zoom):
     """Process multiple cities from CSV file."""
-    print(f"Starting\tmapshot_from_csv()")
+    print("Starting\tmapshot_from_csv()")
     print("--" * 25)
 
-    with open(filepath, 'r') as f:
+    with open(filepath, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             cityname = row.get('city')
-            try:
-                mapshot(cityname.strip())
-            except Exception as e:
-                print(f"Error processing '{cityname}': {e}")
+            mapshot(cityname.strip(), zoom)
 
-def generate_plt(square_gdf, square, output_file):
+
+def generate_plt(square_gdf, square, output_file, zoom):
     """Generate final output image."""
-    global ZOOM
-
     print("Starting\tgenerate_plt")
 
     img_size = 2048
@@ -99,7 +103,7 @@ def generate_plt(square_gdf, square, output_file):
     cx.add_basemap(
         ax,
         source=cx.providers.Esri.WorldImagery,
-        zoom=ZOOM,
+        zoom=zoom,
         attribution=False
     )
 
@@ -125,6 +129,7 @@ def generate_plt(square_gdf, square, output_file):
     print(f"Saved images/{output_file}")
     print("--" * 25)
 
+
 def osm(cityname):
     """Make request to Nomatim API search endpoint."""
     print("Starting\tosm")
@@ -136,9 +141,13 @@ def osm(cityname):
         "polygon_geojson": 1
     }
 
-    response = requests.get(url, params=params, headers={"User-Agent": "mapshot-script"})
+    response = requests.get(
+        url,
+        params=params,
+        headers={"User-Agent": "mapshot-script"},
+        timeout=10)
     return response.json()
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter
