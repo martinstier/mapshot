@@ -8,6 +8,14 @@ Generate the _perfect_ satellite image.
 
 ---
 
+### Function
+
+1. **Query OpenStreetMap**: Fetches city boundary polygon via Nominatim API
+2. **Calculate square bounds**: Finds minimal square that encompasses the entire city
+3. **Reproject to Web Mercator**: Converts from lat/lon to metric projection (EPSG:3857)
+4. **Render satellite tiles**: Downloads and composites Esri World Imagery basemap
+5. **Export image**: Saves as PNG with no axes or decorations
+
 ### Installation
 
 1. Clone the repository:
@@ -89,14 +97,6 @@ All images are saved to the `images/` directory with sanitized filenames:
 - Output: `images/portland_oregon_out.png`
 
 Images are 2048×2048 pixels by default.
-
-### How It Works
-
-1. **Query OpenStreetMap**: Fetches city boundary polygon via Nominatim API
-2. **Calculate square bounds**: Finds minimal square that encompasses the entire city
-3. **Reproject to Web Mercator**: Converts from lat/lon to metric projection (EPSG:3857)
-4. **Render satellite tiles**: Downloads and composites Esri World Imagery basemap
-5. **Export image**: Saves as PNG with no axes or decorations
 
 ### Limitations
 
