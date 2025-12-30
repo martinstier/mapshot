@@ -1,4 +1,5 @@
 """Return image."""
+import click
 import os
 import csv
 import sys
@@ -9,9 +10,29 @@ from shapely.geometry import box
 import matplotlib.pyplot as plt
 import contextily as cx
 
+
+@click.command()
+@click.argument('cityname', required=False)
+@click.option('--csv', 'csv_file', type=click.Path(exists=True), help='Process cities from CSV file')
+@click.option('--zoom', default=12, type=int, help='Zoom level for basemap (default: 12)')
+def main(cityname, csv_file, zoom):
+    """Generate square satellite imagery for cities."""
+    global ZOOM
+    ZOOM = zoom
+
+    if csv_file:
+        mapshot_from_csv(csv_file)
+    elif cityname:
+        mapshot(cityname)
+    else:
+        click.echo("Error: Provide either a city name or --csv file")
+        click.echo("Usage: python3 mapshot.py <cityname>")
+        click.echo("       python3 mapshot.py --csv <filepath>")
+        exit(1)
+
 def mapshot(cityname):
     """Create a mapshot of the inputted city."""
-    print("Starting\tmapshot()")
+    print(f"Starting\tmapshot({cityname})")
 
     data = osm(cityname)
 
@@ -48,6 +69,7 @@ def mapshot(cityname):
 def mapshot_from_csv(filepath):
     """Process multiple cities from CSV file."""
     print(f"Starting\tmapshot_from_csv()")
+    print("--" * 25)
 
     with open(filepath, 'r') as f:
         reader = csv.DictReader(f)
@@ -60,6 +82,8 @@ def mapshot_from_csv(filepath):
 
 def generate_plt(square_gdf, square, output_file):
     """Generate final output image."""
+    global ZOOM
+
     print("Starting\tgenerate_plt")
 
     img_size = 2048
@@ -75,7 +99,7 @@ def generate_plt(square_gdf, square, output_file):
     cx.add_basemap(
         ax,
         source=cx.providers.Esri.WorldImagery,
-        zoom=12,
+        zoom=ZOOM,
         attribution=False
     )
 
@@ -98,7 +122,8 @@ def generate_plt(square_gdf, square, output_file):
     )
     plt.close()
 
-    print(f"Saved {output_file}")
+    print(f"Saved images/{output_file}")
+    print("--" * 25)
 
 def osm(cityname):
     """Make request to Nomatim API search endpoint."""
@@ -116,17 +141,4 @@ def osm(cityname):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python3 mapshot.py <cityname>")
-        print("       python3 mapshot.py --csv <filepath>")
-        exit(1)
-
-    print("Starting\tmapshot")
-    if sys.argv[1] == "--csv":
-        if len(sys.argv) != 3:
-            print("Usage: python3 mapshot.py <cityname>")
-            print("       python3 mapshot.py --csv <filepath>")
-            exit(1)
-        mapshot_from_csv(sys.argv[2])
-    else:
-        mapshot(sys.argv[1])
+    main()

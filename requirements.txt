@@ -6,3 +6,4 @@ geopandas
 shapely
 matplotlib
 contextily
+click
