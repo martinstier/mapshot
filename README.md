@@ -8,7 +8,7 @@ Generate the _perfect_ satellite image.
 
 ---
 
-### Function
+## Function
 
 1. **Query OpenStreetMap**: Fetches city boundary polygon via Nominatim API
 2. **Calculate square bounds**: Finds minimal square that encompasses the entire city
@@ -16,7 +16,7 @@ Generate the _perfect_ satellite image.
 4. **Render satellite tiles**: Downloads and composites Esri World Imagery basemap
 5. **Export image**: Saves as PNG with no axes or decorations
 
-### Installation
+## Installation
 
 Clone the repo:
 
@@ -32,6 +32,8 @@ python3 -m venv env
 source env/bin/activate  # On Windows: env\Scripts\activate
 pip install -r requirements.txt
 ```
+
+## Usage
 
 ### Single City
 
@@ -74,11 +76,11 @@ Options:
   --help          Show this message and exit.
 ```
 
-### Output
+## Output
 
-All images are saved to the `images/` directory with sanitized filenames:
+All images are saved to the `images/` directory with sanitized filenames.
 
-### Limitations
+## Limitations
 
 - Needs internet connection for API requests and tile downloads
 - Very large objects may take longer to render
