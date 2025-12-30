@@ -42,7 +42,7 @@ def mapshot(cityname):
     square_gdf = gpd.GeoDataFrame(geometry=[square], crs=gdf.crs)
 
     safe_name = re.sub(r'[^a-zA-Z0-9]+', '_', cityname).strip('_')
-    generate_plt(square_gdf, square, f"{safe_name}_out.png")
+    generate_plt(square_gdf, square, f"{safe_name.lower()}_out.png")
 
 
 def mapshot_from_csv(filepath):
@@ -70,18 +70,25 @@ def generate_plt(square_gdf, square, output_file):
 
     square_gdf.boundary.plot(ax=ax, linewidth=0)
 
+    print("\tAdding basemap")
+
     cx.add_basemap(
         ax,
         source=cx.providers.Esri.WorldImagery,
+        zoom=12,
         attribution=False
     )
+
+    print("\tDone adding basemap")
 
     ax.set_xlim(square.bounds[0], square.bounds[2])
     ax.set_ylim(square.bounds[1], square.bounds[3])
     ax.axis("off")
 
     os.makedirs("images", exist_ok=True)
-    output_path = os.ath.join("images", output_file)
+    output_path = os.path.join("images", output_file)
+
+    print("\tSaving image")
 
     plt.savefig(
         output_path,
