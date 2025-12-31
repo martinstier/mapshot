@@ -1,6 +1,3 @@
-os
-csv
-re
 requests
 geopandas
 shapely
