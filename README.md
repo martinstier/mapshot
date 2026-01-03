@@ -79,10 +79,3 @@ Options:
 ## Output
 
 All images are saved to the `images/` directory with sanitized filenames.
-
-## Limitations
-
-- Needs internet connection for API requests and tile downloads
-- Very large objects may take longer to render
-- Images depend on Nominatim search results
-- Remote/unrecognized locations may not return results
