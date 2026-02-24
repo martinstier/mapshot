@@ -18,13 +18,13 @@ import contextily as cx
     'csv_file',
     type=click.Path(exists=True),
     help='Process cities from CSV file'
-    )
+)
 @click.option(
     '--zoom',
     default=None,
     type=int,
     help='Zoom level for basemap (default: None)'
-    )
+)
 def main(cityname, csv_file, zoom):
     """Generate square satellite imagery for cities."""
     if csv_file:
@@ -98,7 +98,7 @@ def generate_plt(square_gdf, square, output_file, zoom):
 
     square_gdf.boundary.plot(ax=ax, linewidth=0)
 
-    print("\tAdding basemap")
+    print("\t\tAdding basemap")
 
     if zoom:
         cx.add_basemap(
@@ -114,7 +114,7 @@ def generate_plt(square_gdf, square, output_file, zoom):
             attribution=False
         )
 
-    print("\tDone adding basemap")
+    print("\t\tDone adding basemap")
 
     ax.set_xlim(square.bounds[0], square.bounds[2])
     ax.set_ylim(square.bounds[1], square.bounds[3])
@@ -123,7 +123,7 @@ def generate_plt(square_gdf, square, output_file, zoom):
     os.makedirs("images", exist_ok=True)
     output_path = os.path.join("images", output_file)
 
-    print("\tSaving image")
+    print("\t\tSaving image")
 
     plt.savefig(
         output_path,
@@ -152,7 +152,8 @@ def osm(cityname):
         url,
         params=params,
         headers={"User-Agent": "mapshot-script"},
-        timeout=10)
+        timeout=10
+    )
     return response.json()
 
 
