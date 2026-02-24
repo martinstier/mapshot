@@ -21,7 +21,7 @@ Generate the _perfect_ satellite image.
 Clone the repo:
 
 ```bash
-git clone https://github.com/yourusername/mapshot.git
+git clone https://github.com/martinstier/mapshot.git
 cd mapshot
 ```
 
@@ -29,7 +29,7 @@ Create and activate a virtual environment and install dependencies:
 
 ```bash
 python3 -m venv env
-source env/bin/activate  # On Windows: env\Scripts\activate
+source env/bin/activate  # Windows: env\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -79,10 +79,3 @@ Options:
 ## Output
 
 All images are saved to the `images/` directory with sanitized filenames.
-
-## Limitations
-
-- Needs internet connection for API requests and tile downloads
-- Very large objects may take longer to render
-- Images depend on Nominatim search results
-- Remote/unrecognized locations may not return results
